@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLH governance preflight"
+  short_description: "Run the shortest risk-based authorization check"
+  default_prompt: "Classify risk, scope, authorization, and protected actions; use the shortest applicable HLH path."

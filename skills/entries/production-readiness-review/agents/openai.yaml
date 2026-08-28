@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLH production readiness review"
+  short_description: "Review production and release readiness"
+  default_prompt: "Review production, deployment, release, real-user, and customer-data readiness without inferring approval."

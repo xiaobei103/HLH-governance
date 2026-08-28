@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLH secret protection review"
+  short_description: "Check sensitive outputs without exposing values"
+  default_prompt: "Safely detect and handle secrets, credentials, tokens, and PII without printing sensitive values."

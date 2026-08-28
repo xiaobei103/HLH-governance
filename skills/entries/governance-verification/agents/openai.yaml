@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLH governance verification"
+  short_description: "Verify evidence and findings when triggered"
+  default_prompt: "Apply conditional evidence, audit, finding, and governance checks only when risk or events require them."

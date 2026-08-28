@@ -1,0 +1,4 @@
+interface:
+  display_name: "HLH delivery decision"
+  short_description: "Evaluate self-verification and completion"
+  default_prompt: "Evaluate Self-Verify and completion; add commit-only or handoff checks only when applicable."

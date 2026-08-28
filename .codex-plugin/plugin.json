@@ -1,0 +1,23 @@
+{
+  "name": "hlh-governance",
+  "version": "3.2.0",
+  "description": "HLH governance controls for authorization, scope, evidence, audit, completion, and production readiness.",
+  "author": { "name": "HLH AI Software Engineering Workflow" },
+  "license": "MIT",
+  "keywords": ["governance", "authorization", "scope", "evidence", "audit", "security", "workflow"],
+  "skills": "./skills/entries/",
+  "hooks": "./hooks.json",
+  "interface": {
+    "displayName": "HLH Governance",
+    "shortDescription": "Govern safe AI software engineering",
+    "longDescription": "Applies HLH governance controls independently of the engineering execution layer, including authorization, evidence, audit, completion, handoff, and production readiness review.",
+    "developerName": "HLH AI Software Engineering Workflow",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "defaultPrompt": [
+      "Classify risk and run the shortest applicable HLH governance path.",
+      "Use verification and specialist reviews only when risk or events trigger them."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
