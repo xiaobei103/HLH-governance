@@ -1,8 +1,8 @@
 import json, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
-ROOT=Path(__file__).parents[1]; PY=sys.executable
+ROOT=Path(__file__).parents[1]; PLUGIN=ROOT/'plugins'/'hlh-governance'; PY=sys.executable
 def run(script,*args, input=None):
-    path=ROOT/script if (ROOT/script).exists() else ROOT/'scripts'/script
+    path=PLUGIN/script if (PLUGIN/script).exists() else PLUGIN/'scripts'/script
     return subprocess.run([PY,str(path),*args],input=input,text=True,capture_output=True)
 
 def run_plugin_preflight_fixture(manifest, hook_file=None):
@@ -11,14 +11,14 @@ def run_plugin_preflight_fixture(manifest, hook_file=None):
         (root/'.codex-plugin'/'plugin.json').write_text(json.dumps(manifest),encoding='utf-8')
         if hook_file is not None:
             (root/'hooks.json').write_text(json.dumps(hook_file),encoding='utf-8')
-        shutil.copy(ROOT/'scripts'/'plugin-preflight.py',root/'scripts'/'plugin-preflight.py')
+        shutil.copy(PLUGIN/'scripts'/'plugin-preflight.py',root/'scripts'/'plugin-preflight.py')
         return subprocess.run([PY,str(root/'scripts'/'plugin-preflight.py')],text=True,capture_output=True)
 
 class GovernanceScriptTests(unittest.TestCase):
     def test_hook_manifest_is_valid_and_declares_only_sync_pre_tool_use(self):
-        manifest=json.loads((ROOT/'.codex-plugin'/'plugin.json').read_text(encoding='utf-8'))
+        manifest=json.loads((PLUGIN/'.codex-plugin'/'plugin.json').read_text(encoding='utf-8'))
         self.assertEqual(manifest['hooks'],'./hooks.json')
-        hooks=json.loads((ROOT/'hooks.json').read_text(encoding='utf-8'))
+        hooks=json.loads((PLUGIN/'hooks.json').read_text(encoding='utf-8'))
         self.assertIn('PreToolUse', hooks['hooks'])
         self.assertNotIn('PostToolUse', hooks['hooks'])
         for group in hooks['hooks']['PreToolUse']:
@@ -96,44 +96,44 @@ class GovernanceScriptTests(unittest.TestCase):
         self.assertEqual(run('plugin-preflight.py').returncode,0)
 
     def test_runtime_context_contract_defines_minimal_loading_boundaries(self):
-        policy=(ROOT/'references'/'policies'/'minimal-governance-context.md').read_text(encoding='utf-8')
+        policy=(PLUGIN/'references'/'policies'/'minimal-governance-context.md').read_text(encoding='utf-8')
         for term in ('Always Load','Conditional Load','Never Default Load','LOW','MEDIUM','HIGH','UNKNOWN','history','migration','Feature Parity'):
             self.assertIn(term,policy)
 
     def test_low_risk_verification_routes_to_skip(self):
-        verification=(ROOT/'skills'/'entries'/'governance-verification'/'SKILL.md').read_text(encoding='utf-8')
+        verification=(PLUGIN/'skills'/'entries'/'governance-verification'/'SKILL.md').read_text(encoding='utf-8')
         self.assertIn('Low Risk',verification); self.assertIn('SKIP',verification)
 
     def test_medium_and_high_risk_routes_are_explicit(self):
-        matrix=(ROOT/'references'/'policies'/'risk-trigger-matrix.md').read_text(encoding='utf-8')
+        matrix=(PLUGIN/'references'/'policies'/'risk-trigger-matrix.md').read_text(encoding='utf-8')
         self.assertIn('MEDIUM',matrix); self.assertIn('HIGH',matrix); self.assertIn('EXECUTE',matrix)
         self.assertIn('production-readiness-review',matrix); self.assertIn('secret-protection-review',matrix)
 
     def test_unknown_risk_is_inconclusive_and_stops(self):
-        matrix=(ROOT/'references'/'policies'/'risk-trigger-matrix.md').read_text(encoding='utf-8')
-        preflight=(ROOT/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
+        matrix=(PLUGIN/'references'/'policies'/'risk-trigger-matrix.md').read_text(encoding='utf-8')
+        preflight=(PLUGIN/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
         self.assertIn('UNKNOWN',matrix); self.assertIn('INCONCLUSIVE',matrix); self.assertIn('STOP',preflight)
 
     def test_delivery_convergence_keeps_completion_separate(self):
-        delivery=(ROOT/'skills'/'entries'/'delivery-decision'/'SKILL.md').read_text(encoding='utf-8')
+        delivery=(PLUGIN/'skills'/'entries'/'delivery-decision'/'SKILL.md').read_text(encoding='utf-8')
         for term in ('Declared Scope','Authorized Scope','Actual Change','Verified Result','Incomplete Items','Out-of-Scope Observations','Next Authorized Action','INCOMPLETE'):
             self.assertIn(term,delivery)
         self.assertIn('Completion != Commit',delivery); self.assertIn('Commit != Production Readiness',delivery)
 
     def test_low_risk_role_churn_is_conditional(self):
-        preflight=(ROOT/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
+        preflight=(PLUGIN/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
         self.assertIn('Model ≠ Role ≠ Permission',preflight); self.assertIn('Low Risk',preflight); self.assertIn('Role change',preflight)
 
     def test_plugin_exposes_only_five_final_skill_entries(self):
-        manifest=json.loads((ROOT/'.codex-plugin'/'plugin.json').read_text(encoding='utf-8'))
+        manifest=json.loads((PLUGIN/'.codex-plugin'/'plugin.json').read_text(encoding='utf-8'))
         self.assertEqual(manifest['skills'],'./skills/entries/')
         expected={'governance-preflight','governance-verification','delivery-decision','secret-protection-review','production-readiness-review'}
-        actual={p.name for p in (ROOT/'skills'/'entries').iterdir() if p.is_dir()}
+        actual={p.name for p in (PLUGIN/'skills'/'entries').iterdir() if p.is_dir()}
         self.assertEqual(actual,expected)
 
     def test_low_risk_route_does_not_require_full_verification_chain(self):
-        preflight=(ROOT/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
-        verification=(ROOT/'skills'/'entries'/'governance-verification'/'SKILL.md').read_text(encoding='utf-8')
+        preflight=(PLUGIN/'skills'/'entries'/'governance-preflight'/'SKILL.md').read_text(encoding='utf-8')
+        verification=(PLUGIN/'skills'/'entries'/'governance-verification'/'SKILL.md').read_text(encoding='utf-8')
         self.assertIn('Scope → Authorization → Risk → Protected Action',preflight)
         self.assertIn('not a default step',verification)
 
