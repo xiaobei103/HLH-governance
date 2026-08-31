@@ -15,6 +15,33 @@ def run_plugin_preflight_fixture(manifest, hook_file=None):
         return subprocess.run([PY,str(root/'scripts'/'plugin-preflight.py')],text=True,capture_output=True)
 
 class GovernanceScriptTests(unittest.TestCase):
+    def test_product_readiness_public_evidence_assets_exist_and_agree(self):
+        root = ROOT
+        for relative in (
+            'docs/product-readiness/phase-status.md',
+            'docs/product-readiness/evidence-model.md',
+            'docs/product-readiness/compatibility-matrix.md',
+            '.github/workflows/verification.yml',
+        ):
+            self.assertTrue((root / relative).exists(), relative)
+        status = (root / 'docs/product-readiness/phase-status.md').read_text(encoding='utf-8')
+        compatibility = (root / 'docs/product-readiness/compatibility-matrix.md').read_text(encoding='utf-8')
+        self.assertIn('Phase 1 = CLOSED', status)
+        self.assertIn('Phase 2 = CLOSED', status)
+        self.assertIn('P2-WP3 = PASS', status)
+        self.assertIn('Phase 2 Independent Audit = PASS WITH OBSERVATIONS', status)
+        self.assertIn('Phase 3 = PASS; ready for Commit Authorization', status)
+        self.assertIn('Experimental', compatibility)
+        self.assertIn('INCONCLUSIVE', compatibility)
+
+    def test_secret_scan_recurses_into_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = Path(directory) / 'nested' / 'fixture.txt'
+            fixture.parent.mkdir()
+            fixture.write_text('API_KEY=synthetic-secret', encoding='utf-8')
+            result = run('secret-scan.py', directory)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('values_exposed', result.stdout)
     def test_hook_manifest_is_valid_and_declares_only_sync_pre_tool_use(self):
         manifest=json.loads((PLUGIN/'.codex-plugin'/'plugin.json').read_text(encoding='utf-8'))
         self.assertEqual(manifest['hooks'],'./hooks.json')

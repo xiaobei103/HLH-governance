@@ -5,7 +5,15 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('paths',nargs='+'); a=ap.parse_args(); hits=[]
     for raw in a.paths:
         p=pathlib.Path(raw)
-        if p.is_file() and any(re.search(x,p.read_text(errors='ignore')) for x in PATTERNS): hits.append(str(p))
+        candidates = [p] if p.is_file() else (p.rglob('*') if p.is_dir() else [])
+        for candidate in candidates:
+            if candidate.is_file():
+                try:
+                    content = candidate.read_text(errors='ignore')
+                except OSError:
+                    continue
+                if any(re.search(x, content) for x in PATTERNS):
+                    hits.append(str(candidate))
     print(json.dumps({'status':'PASS' if not hits else 'FAIL','matching_files':hits,'values_exposed':False},ensure_ascii=False))
     return 0 if not hits else 2
 if __name__=='__main__': raise SystemExit(main())

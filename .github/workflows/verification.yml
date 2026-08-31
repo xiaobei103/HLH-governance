@@ -1,0 +1,24 @@
+name: Verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -q
+      - name: Run plugin preflight
+        run: python plugins/hlh-governance/scripts/plugin-preflight.py
+      - name: Run secret scan
+        run: >-
+          python plugins/hlh-governance/scripts/secret-scan.py
+          README.md CONTRIBUTING.md plugins/hlh-governance/.codex-plugin
+          plugins/hlh-governance/hooks.json plugins/hlh-governance/scripts
+          plugins/hlh-governance/hooks plugins/hlh-governance/skills
