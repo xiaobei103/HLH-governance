@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible problem with the public preview.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include secrets, credentials, private keys, PII, or sensitive logs."
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe observed and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Give the smallest safe reproducible example.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      placeholder: 3.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification evidence
+      description: Include commands, safe output, and known limitations.
+    validations:
+      required: true

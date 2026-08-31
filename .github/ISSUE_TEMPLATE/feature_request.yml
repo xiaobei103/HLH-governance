@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest a focused improvement to HLH Governance.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include secrets, credentials, private keys, PII, or sensitive logs."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and use case
+      description: What user problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful behavior and its boundaries.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and limitations
+      description: Provide supporting evidence and identify what remains unverified.
+    validations:
+      required: true

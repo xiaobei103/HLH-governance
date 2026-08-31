@@ -7,7 +7,7 @@
 - P2-WP3 = PASS.
 - Phase 2 Independent Audit = PASS WITH OBSERVATIONS.
 - Phase 3 = PASS; ready for Commit Authorization.
-- Public Preview is not Production Ready.
+- Phase 4 Public Preview = Release Candidate preparation in progress; not Production Ready.
 - Hook status is Experimental / Runtime-dependent / INCONCLUSIVE until trusted Desktop lifecycle evidence exists.
 
 ## Lifecycle boundary
@@ -17,3 +17,9 @@ Authorization, Execution, Verification, Completion, Commit, and Production Readi
 ## Review cadence
 
 Work packages use Self-Verify first. Independent Audit occurs at the end of Phase 2, Phase 3, for the Preview Release Candidate, and at Stable Readiness Review.
+
+## Public Preview boundary
+
+The preview supports the five Active Skills with repository verification. Claude
+Code, Cursor, MCP, SaaS, and Web Console are Not Supported. A public preview
+release candidate is not a GitHub Release, deployment, or Stable promotion.

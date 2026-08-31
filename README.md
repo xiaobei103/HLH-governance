@@ -201,9 +201,17 @@ The following remains explicitly unverified:
 
 ## Contributing
 
-Please include the affected scope, expected behavior, verification evidence,
-and known limitations in a contribution or issue. Do not include real
-credentials, tokens, private keys, `.env` files, or sensitive user data.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and use the repository issue templates.
+Include the affected scope, expected behavior, verification evidence, and
+known limitations. Do not include real credentials, tokens, private keys,
+`.env` files, or sensitive user data.
+
+## Public Preview
+
+See [Public Preview](docs/product-readiness/public-preview.md) for supported
+and unsupported capabilities, known limitations, Hook status, and evidence
+boundaries. Release notes are maintained as a candidate until separately
+authorized for publication.
 
 ## License
 
